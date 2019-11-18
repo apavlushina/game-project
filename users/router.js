@@ -4,7 +4,6 @@ const { toJWT } = require("../auth/jwt");
 const User = require("./model");
 const bcrypt = require("bcrypt");
 const router = new Router();
-const { toJWT, toData } = require("../auth/jwt");
 
 router.get("/users", (_request, response, next) => {
   User.findAll()
