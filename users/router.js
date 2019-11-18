@@ -1,5 +1,6 @@
 const express = require("express");
 const { Router } = express;
+const { toJWT } = require("../auth/jwt");
 const User = require("./model");
 const bcrypt = require("bcrypt");
 const router = new Router();
@@ -18,7 +19,8 @@ router.post("/users", (req, res, next) => {
   };
 
   User.create(user)
-    .then(user => res.json(user))
+    .then(user => toJWT({ userID: user.id }))
+    .then(res => res.send)
     .catch(err => next(err));
 });
 
