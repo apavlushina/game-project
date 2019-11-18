@@ -1,13 +1,13 @@
 const { Router } = require("express");
 const { toJWT, toData } = require("./jwt");
-const User = require("../user/model");
+const User = require("../users/model");
 const auth = require("./middleware");
 const bcrypt = require("bcrypt");
 const router = new Router();
 
 router.post("/login", (req, res) => {
   const { email, password } = req.body;
-
+  console.log("login endpoint test", req.body);
   if (!email || !password) {
     res.status(400).send({
       message: "Please supply a valid email and password"

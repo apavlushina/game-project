@@ -15,5 +15,8 @@ app.listen(port, () => console.log(`Listen on port ${port}`));
 const userRouter = require("./users/router");
 app.use(userRouter);
 
+const authRouter = require("./auth/router");
+app.use(authRouter);
+
 const db = require("./db");
 const User = require("./users/model");
