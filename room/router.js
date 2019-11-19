@@ -8,7 +8,7 @@ function roomFactory(stream) {
   // step 4.
   const router = new Router();
 
-  router.post("/room", (request, response) => {
+  router.post("/room", auth, (request, response) => {
     Room.create(request.body).then(room => {
       const action = {
         type: "ROOM",
