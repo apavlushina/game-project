@@ -1,5 +1,6 @@
 const express = require("express");
 const Room = require("./model");
+const User = require("../users/model");
 const auth = require("../auth/middleware");
 const { toData } = require("../auth/jwt");
 
