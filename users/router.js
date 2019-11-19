@@ -55,14 +55,14 @@ router.get("/users/:userId", (req, res, next) => {
 // });
 
 router.put("/users/join", async (req, res, next) => {
-  console.log("what is this?", req.body.jwt, req.body);
+  // console.log("what is this?", req.body.jwt, req.body);
   const userId = toData(req.body.jwt).userId;
   const room = await Room.findOne({ where: { name: req.body.roomName } });
   const roomId = room.dataValues.id;
-  console.log("IT WORKS", userId, roomId);
+  // console.log("IT WORKS", userId, roomId);
 
   const user = await User.findByPk(userId);
-  console.log("user test", user);
+  // console.log("user test", user);
   return user.update({ roomId });
 });
 
