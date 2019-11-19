@@ -10,8 +10,6 @@ const cors = require("cors");
 const corsMiddleware = cors();
 app.use(corsMiddleware);
 
-app.use(roomRouter);
-
 const bodyParser = require("body-parser");
 const parserMiddleware = bodyParser.json();
 app.use(parserMiddleware);
