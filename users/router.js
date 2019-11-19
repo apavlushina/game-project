@@ -47,6 +47,7 @@ router.put("/users/join", auth, async (req, res, next) => {
 
   const user = await User.findByPk(userId);
   // console.log("user test", user);
+
   return user.update({ roomId });
 });
 

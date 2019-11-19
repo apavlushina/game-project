@@ -4,6 +4,7 @@ const port = process.env.PORT || 4000;
 const Sse = require("json-sse"); // step 1. import sse
 const roomFactory = require("./room/router"); // step 5.
 const Room = require("./room/model");
+const User = require("./users/model");
 
 const cors = require("cors");
 const corsMiddleware = cors();
@@ -38,7 +39,7 @@ app.use(roomRouter); // step 7. run the router
 app.get("/stream", async (request, response, next) => {
   // step 3.
   // step 4. in /room/router.js
-  const rooms = await Room.findAll(); // this displays all the rooms
+  const rooms = await Room.findAll({ include: [User] }); // this displays all the rooms
   // console.log("rooms test:", rooms);
 
   // action creation on the backend; this will be sent straight to the frontend reducer:
@@ -53,6 +54,3 @@ app.get("/stream", async (request, response, next) => {
   stream.updateInit(string); // this updates the stream when the user enters the page
   stream.init(request, response); // this connects the stream
 });
-
-const db = require("./db");
-const User = require("./users/model");
