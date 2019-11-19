@@ -4,6 +4,7 @@ const User = require("./model");
 const bcrypt = require("bcrypt");
 const router = new Router();
 const { toJWT, toData } = require("../auth/jwt");
+const Room = require("../room/model");
 
 router.get("/users", (_request, response, next) => {
   User.findAll()
@@ -36,16 +37,33 @@ router.get("/users/:userId", (req, res, next) => {
     .catch(next);
 });
 
-router.put("/users/:userId", (req, res, next) => {
-  User.findByPk(req.params.userId)
-    .then(name => {
-      if (name) {
-        name.update(req.body).then(name => res.json(name));
-      } else {
-        res.status(404).end();
-      }
-    })
-    .catch(next);
+// router.put("/users/:jwt", (req, res, next) => {
+//   const userId = toData(req.params.jwt);
+//   const room = Room.findOne({ where: { name: req.body.roomName } });
+//   const roomId = room.id;
+//   console.log("user id", userId);
+//   User.findByPk(userId)
+//     .then(name => {
+//       if (name) {
+//         console.log("yes user is here!");
+//         name.update(req.body).then(name => res.json(name));
+//       } else {
+//         res.status(404).end();
+//       }
+//     })
+//     .catch(next);
+// });
+
+router.put("/users/join", async (req, res, next) => {
+  console.log("what is this?", req.body.jwt, req.body);
+  const userId = toData(req.body.jwt).userId;
+  const room = await Room.findOne({ where: { name: req.body.roomName } });
+  const roomId = room.dataValues.id;
+  console.log("IT WORKS", userId, roomId);
+
+  const user = await User.findByPk(userId);
+  console.log("user test", user);
+  return user.update({ roomId });
 });
 
 module.exports = router;
