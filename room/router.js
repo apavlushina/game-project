@@ -10,7 +10,12 @@ function roomFactory(stream) {
 
   router.post("/room", (request, response) => {
     Room.create(request.body).then(room => {
-      const data = JSON.stringify(room);
+      const action = {
+        type: "ROOM",
+        payload: room
+      };
+      const data = JSON.stringify(action); // this sends an action object straight to the reducer
+      // this is so that the stream.onmessage always catches an action object for scalability
       stream.send(data);
       response.send(room);
     });
