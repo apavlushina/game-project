@@ -1,5 +1,6 @@
 const express = require("express");
 const Room = require("./model");
+const auth = require("../auth/middleware");
 
 const { Router } = express;
 

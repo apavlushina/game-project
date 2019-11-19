@@ -7,4 +7,7 @@ const User = db.define("user", {
   email: Sequelize.STRING
 });
 
+const Room = require("../room/model");
+User.belongsTo(Room); // The roomId column will be null in the beginning
+
 module.exports = User;
