@@ -3,9 +3,7 @@ const { Router } = express;
 const User = require("./model");
 const bcrypt = require("bcrypt");
 const router = new Router();
-const { toJWT, toData } = require("../auth/jwt");
-const Room = require("../room/model");
-const auth = require("../auth/middleware");
+const { toJWT } = require("../auth/jwt");
 
 router.get("/users", (_request, response, next) => {
   User.findAll()
