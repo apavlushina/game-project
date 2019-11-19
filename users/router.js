@@ -4,6 +4,9 @@ const { toJWT } = require("../auth/jwt");
 const User = require("./model");
 const bcrypt = require("bcrypt");
 const router = new Router();
+const { toJWT, toData } = require("../auth/jwt");
+const Room = require("../room/model");
+const auth = require("../auth/middleware");
 
 router.get("/users", (_request, response, next) => {
   User.findAll()
@@ -31,18 +34,6 @@ router.get("/users/:userId", (req, res, next) => {
         res.status(404).end();
       } else {
         res.json(name);
-      }
-    })
-    .catch(next);
-});
-
-router.put("/users/:userId", (req, res, next) => {
-  User.findByPk(req.params.userId)
-    .then(name => {
-      if (name) {
-        name.update(req.body).then(name => res.json(name));
-      } else {
-        res.status(404).end();
       }
     })
     .catch(next);

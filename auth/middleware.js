@@ -2,6 +2,7 @@ const User = require("../users/model");
 const { toData } = require("./jwt");
 
 function auth(req, res, next) {
+  console.log("we start auth", req.headers.authorization);
   const auth =
     req.headers.authorization && req.headers.authorization.split(" ");
   if (auth && auth[0] === "Bearer" && auth[1]) {
@@ -21,6 +22,7 @@ function auth(req, res, next) {
       });
     }
   } else {
+    console.log("error! supply some valid credentials!");
     res.status(401).send({
       message: "Please supply some valid credentials"
     });

@@ -7,7 +7,7 @@ const router = new Router();
 
 router.post("/login", (req, res) => {
   const { email, password } = req.body;
-  console.log("login endpoint test", req.body);
+  // console.log("login endpoint test", req.body);
   if (!email || !password) {
     res.status(400).send({
       message: "Please supply a valid email and password"
