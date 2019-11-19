@@ -15,14 +15,6 @@ function roomFactory(stream) {
     });
   });
 
-  router.get("/room", (request, response, next) => {
-    Room.findAll().then(rooms => {
-      const data = JSON.stringify(rooms);
-      stream.send(data);
-      response.send(rooms);
-    });
-  });
-
   return router;
 }
 
