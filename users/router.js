@@ -48,6 +48,15 @@ router.put("/users/join", auth, async (req, res, next) => {
   const user = await User.findByPk(userId);
   // console.log("user test", user);
 
+  const rooms = await room.findAll({ include: [User] });
+  const action = {
+    type: "ROOMS",
+    payload: rooms
+  };
+  const string = JSON.stringify(action);
+  // stream.send(string)
+  // this needs to be in the room router with the stream!
+
   return user.update({ roomId });
 });
 
