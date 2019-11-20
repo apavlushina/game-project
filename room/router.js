@@ -3,6 +3,7 @@ const Room = require("./model");
 const auth = require("../auth/middleware");
 const { toData } = require("../auth/jwt");
 const User = require("../users/model");
+const Sequelize = require("sequelize");
 
 const { Router } = express;
 
@@ -48,12 +49,37 @@ function roomFactory(stream) {
 
   // start: each player start with 5 coins (coin column)
 
-  // status: check player waiting or thinking (decision column)
-
   // updatePlayer: when a player decides (presses a button), the player's coins and decision columns change
+  // status: check player waiting or thinking (decision column)
+  router.put("/status", async (req, res, next) => {
+    const userId = toData(req.body.jwt).userId;
+    const user = await User.findByPk(userId);
+
+    // update database
+    if (req.body.decision === "cooperate") {
+      user
+        .update({
+          coins: Sequelize.literal("coins-1"),
+          decision: req.body.decision
+        })
+        .catch(console.error);
+    } else {
+      user.update({ decision: req.body.decision }).catch(console.error);
+    }
+
+    // send action to stream with decision
+    const action = {
+      type: "DECISION",
+      payload: user
+    };
+
+    console.log("DECISION PAYLOAD", action.payload);
+    const string = JSON.stringify(action);
+    stream.send(string);
+  });
 
   // comparePlayers: when we have two decisions, compare the players and show the correct results
-  // update both players' coins and decision columns; incrase room turn counter
+  // update both players' coins and decision columns; increase room turn counter
 
   // finalRound: when it is the final round, shows the result and ends the game; kicks them out of the room
 
