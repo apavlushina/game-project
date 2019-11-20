@@ -4,7 +4,9 @@ const db = require("../db");
 const User = db.define("user", {
   name: Sequelize.STRING,
   password: Sequelize.TEXT,
-  email: Sequelize.STRING
+  email: Sequelize.STRING,
+  coins: Sequelize.INTEGER,
+  decision: Sequelize.STRING
 });
 
 const Room = require("../room/model");
