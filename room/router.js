@@ -46,16 +46,16 @@ function roomFactory(stream) {
     res.send(updated);
   });
 
-  // each player start with 5 coins (coin column)
+  // start: each player start with 5 coins (coin column)
 
-  // check player waiting or thinking (decision column)
+  // status: check player waiting or thinking (decision column)
 
-  // when a player decides (presses a button), the player's coins and decision columns change
+  // updatePlayer: when a player decides (presses a button), the player's coins and decision columns change
 
-  // when we have two decisions, compare the players and show the correct results
+  // comparePlayers: when we have two decisions, compare the players and show the correct results
   // update both players' coins and decision columns; incrase room turn counter
 
-  // when it is the final round, shows the result and ends the game; kicks them out of the room
+  // finalRound: when it is the final round, shows the result and ends the game; kicks them out of the room
 
   // when refresh, no roomId for players
 
