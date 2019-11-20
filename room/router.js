@@ -62,16 +62,18 @@ function roomFactory(stream) {
           coins: Sequelize.literal("coins-1"),
           decision: req.body.decision
         })
-        .catch(error);
+        .catch(console.error);
     } else {
-      user.update({ decision: req.body.decision }).catch(error);
+      user.update({ decision: req.body.decision }).catch(console.error);
     }
 
     // send action to stream with decision
     const action = {
       type: "DECISION",
-      payload: request.body.decision
+      payload: user
     };
+
+    console.log("DECISION PAYLOAD", action.payload);
     const string = JSON.stringify(action);
     stream.send(string);
   });
