@@ -18,7 +18,8 @@ router.post("/users", (req, res, next) => {
   const user = {
     name: req.body.name,
     email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 10)
+    password: bcrypt.hashSync(req.body.password, 10),
+    coins: "5"
   };
 
   User.create(user)
