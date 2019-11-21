@@ -3,6 +3,11 @@ const Room = require("./model");
 const auth = require("../auth/middleware");
 const { toData } = require("../auth/jwt");
 const User = require("../users/model");
+const Sequelize = require("sequelize");
+const { serialize } = require("../do");
+
+console.log("serialize test:", serialize);
+
 
 const { Router } = express;
 
@@ -12,11 +17,7 @@ function roomFactory(stream) {
 
   router.post("/room", auth, async (request, response) => {
     const room = await Room.create(request.body);
-    const action = {
-      type: "ROOM",
-      payload: room
-    };
-    const string = JSON.stringify(action); // this sends an action object straight to the reducer
+    const string = serialize("ROOM", room); // this sends an action object straight to the reducer
     // this is so that the stream.onmessage always catches an action object for scalability
     stream.send(string);
     response.send(room);
@@ -37,11 +38,8 @@ function roomFactory(stream) {
     const updated = await user.update({ roomId });
     const rooms = await Room.findAll({ include: [User] });
     // console.log("DO WE HAVE ROOMS?", rooms);
-    const action = {
-      type: "ROOMS",
-      payload: rooms
-    };
-    const string = JSON.stringify(action);
+
+    const string = serialize("ROOMS", rooms);
     stream.send(string);
     res.send(updated);
   });
@@ -61,14 +59,7 @@ function roomFactory(stream) {
       user.update({ decision: req.body.decision }).catch(console.error);
     }
 
-    // send action to stream with decision
-    const action = {
-      type: "DECISION",
-      payload: user
-    };
-
-    console.log("DECISION PAYLOAD", action.payload);
-    const string = JSON.stringify(action);
+    const string = serialize("DECISION", user);
     stream.send(string);
   });
   // DONE start: each player start with 5 coins (coin column)
