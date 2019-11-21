@@ -8,7 +8,6 @@ const { serialize } = require("../do");
 
 console.log("serialize test:", serialize);
 
-
 const { Router } = express;
 
 function roomFactory(stream) {
@@ -17,7 +16,10 @@ function roomFactory(stream) {
 
   router.post("/room", auth, async (request, response) => {
     const room = await Room.create(request.body);
-    const string = serialize("ROOM", room); // this sends an action object straight to the reducer
+
+    const created = await Room.findByPk(room.id, { include: [User] });
+
+    const string = serialize("ROOM", created); // this sends an action object straight to the reducer
     // this is so that the stream.onmessage always catches an action object for scalability
     stream.send(string);
     response.send(room);
@@ -27,7 +29,10 @@ function roomFactory(stream) {
   router.put("/join", auth, async (req, res, next) => {
     // console.log("what is this?", req.body.jwt, req.body);
     const userId = toData(req.body.jwt).userId;
-    const room = await Room.findOne({ where: { name: req.body.roomName } });
+    const room = await Room.findOne({
+      where: { name: req.body.roomName },
+      include: [User]
+    });
     const roomId = room.dataValues.id;
     // console.log("IT WORKS???", userId, roomId);
     const user = await User.findByPk(userId);
@@ -43,6 +48,7 @@ function roomFactory(stream) {
     stream.send(string);
     res.send(updated);
   });
+
   router.put("/status", async (req, res, next) => {
     const userId = toData(req.body.jwt).userId;
     const user = await User.findByPk(userId);
