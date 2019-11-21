@@ -14,8 +14,13 @@ function roomFactory(stream) {
   // step 4.
   const router = new Router();
 
-  router.post("/room", auth, async (request, response) => {
-    const room = await Room.create(request.body);
+  router.post("/room", auth, async (request, response, next) => {
+    const body = {
+      name: request.body.name,
+      turn: 1
+    };
+
+    const room = await Room.create(body).catch(err => next(err));
     const string = serialize("ROOM", room); // this sends an action object straight to the reducer
     // this is so that the stream.onmessage always catches an action object for scalability
     stream.send(string);
@@ -94,6 +99,16 @@ function roomFactory(stream) {
         await room.update({ turn: Sequelize.literal("turn+1") });
 
         if (room.turn > 5) {
+          await User.update(
+            {
+              coins: 5,
+              decision: null
+            },
+            { where: { roomId: room.id } }
+          );
+          await room.update({
+            turn: 0
+          });
         }
       }
 
