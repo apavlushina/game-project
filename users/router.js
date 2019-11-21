@@ -24,7 +24,7 @@ router.post("/users", (req, res, next) => {
 
   User.create(user)
     .then(user =>
-      res.send({ jwt: toJWT({ userId: user.id }), userName: req.body.name })
+      res.send({ jwt: toJWT({ userId: user.id }), name: req.body.name })
     )
     .catch(err => next(err));
 });
