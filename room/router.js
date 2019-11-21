@@ -83,7 +83,7 @@ function roomFactory(stream) {
           const promises = users.map(user => {
             if (user.decision === "cheat") {
               return user.update({
-                coins: Sequelize.literal("coins+2"),
+                coins: Sequelize.literal("coins+3"),
                 decision: null
               });
             } else {
@@ -127,9 +127,10 @@ function roomFactory(stream) {
   // DONE updatePlayer: when a player decides (presses a button), the player's coins and decision columns change
 
   // DONE comparePlayers: when we have two decisions, compare the players and show the correct results
-  // update both players' coins and decision columns; incrase room turn counter
+  // DONE update both players' coins and decision columns; incrase room turn counter
 
-  // finalRound: when it is the final round, shows the result and ends the game; kicks them out of the room
+  // finalRound: when it is the final round, shows the result and ends the game;
+  // DONE kicks them out of the room
 
   // when refresh, no roomId for players
 
