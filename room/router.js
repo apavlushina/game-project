@@ -31,7 +31,10 @@ function roomFactory(stream) {
   router.put("/join", auth, async (req, res, next) => {
     // console.log("what is this?", req.body.jwt, req.body);
     const userId = toData(req.body.jwt).userId;
-    const room = await Room.findOne({ where: { name: req.body.roomName } });
+    const room = await Room.findOne({
+      where: { name: req.body.roomName },
+      include: [User]
+    });
     const roomId = room.dataValues.id;
     // console.log("IT WORKS???", userId, roomId);
     const user = await User.findByPk(userId);
