@@ -83,7 +83,7 @@ function roomFactory(stream) {
           const promises = users.map(user => {
             if (user.decision === "cheat") {
               return user.update({
-                coins: Sequelize.literal("coins+3"),
+                coins: Sequelize.literal("coins+4"),
                 decision: null
               });
             } else {
