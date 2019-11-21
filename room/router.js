@@ -8,6 +8,7 @@ const { serialize } = require("../do");
 
 console.log("serialize test:", serialize);
 
+
 const { Router } = express;
 
 function roomFactory(stream) {
@@ -42,11 +43,6 @@ function roomFactory(stream) {
     stream.send(string);
     res.send(updated);
   });
-
-  // start: each player start with 5 coins (coin column)
-
-  // updatePlayer: when a player decides (presses a button), the player's coins and decision columns change
-  // status: check player waiting or thinking (decision column)
   router.put("/status", async (req, res, next) => {
     const userId = toData(req.body.jwt).userId;
     const user = await User.findByPk(userId);
@@ -66,15 +62,21 @@ function roomFactory(stream) {
     const string = serialize("DECISION", user);
     stream.send(string);
   });
+  // DONE start: each player start with 5 coins (coin column)
+
+  // DONE status: check player waiting or thinking (decision column)
+
+  // DONE updatePlayer: when a player decides (presses a button), the player's coins and decision columns change
 
   // comparePlayers: when we have two decisions, compare the players and show the correct results
-  // update both players' coins and decision columns; increase room turn counter
+  // update both players' coins and decision columns; incrase room turn counter
 
   // finalRound: when it is the final round, shows the result and ends the game; kicks them out of the room
 
   // when refresh, no roomId for players
 
   // frontend: display the rules on the page at all times (button etc)
+  //bootstrap slider??
 
   // create description of results (each round and final results)
 
