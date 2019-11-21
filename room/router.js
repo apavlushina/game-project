@@ -8,7 +8,6 @@ const { serialize } = require("../do");
 
 console.log("serialize test:", serialize);
 
-
 const { Router } = express;
 
 function roomFactory(stream) {
@@ -43,24 +42,68 @@ function roomFactory(stream) {
     stream.send(string);
     res.send(updated);
   });
-  router.put("/status", async (req, res, next) => {
-    const userId = toData(req.body.jwt).userId;
-    const user = await User.findByPk(userId);
 
-    // update database
-    if (req.body.decision === "cooperate") {
-      user
-        .update({
-          coins: Sequelize.literal("coins-1"),
-          decision: req.body.decision
-        })
-        .catch(console.error);
-    } else {
-      user.update({ decision: req.body.decision }).catch(console.error);
+  router.put("/status", auth, async (req, res, next) => {
+    const { user } = req;
+
+    try {
+      // update database
+      await user.update({
+        coins: Sequelize.literal("coins-1"),
+        decision: req.body.decision
+      });
+
+      const room = await Room.findByPk(user.roomId, { include: [User] });
+      const { users } = room;
+      const ready = users.every(user => user.decision);
+
+      if (ready) {
+        if (users.every(user => user.decision === "cooperate")) {
+          await User.update(
+            {
+              coins: Sequelize.literal("coins+3"),
+              decision: null
+            },
+            { where: { roomId: room.id } }
+          );
+        } else if (users.every(user => user.decision === "cheat")) {
+          await User.update(
+            {
+              coins: Sequelize.literal("coins+1"),
+              decision: null
+            },
+            { where: { roomId: room.id } }
+          );
+        } else {
+          const promises = users.map(user => {
+            if (user.decision === "cheat") {
+              return user.update({
+                coins: Sequelize.literal("coins+2"),
+                decision: null
+              });
+            } else {
+              return user.update({
+                decision: null
+              });
+            }
+          });
+
+          await Promise.all(promises);
+        }
+
+        await room.update({ turn: Sequelize.literal("turn+1") });
+
+        if (room.turn > 5) {
+        }
+      }
+
+      const rooms = await Room.findAll({ include: [User] });
+
+      const string = serialize("ROOMS", rooms);
+      stream.send(string);
+    } catch (error) {
+      next(error);
     }
-
-    const string = serialize("DECISION", user);
-    stream.send(string);
   });
   // DONE start: each player start with 5 coins (coin column)
 
@@ -68,7 +111,7 @@ function roomFactory(stream) {
 
   // DONE updatePlayer: when a player decides (presses a button), the player's coins and decision columns change
 
-  // comparePlayers: when we have two decisions, compare the players and show the correct results
+  // DONE comparePlayers: when we have two decisions, compare the players and show the correct results
   // update both players' coins and decision columns; incrase room turn counter
 
   // finalRound: when it is the final round, shows the result and ends the game; kicks them out of the room
