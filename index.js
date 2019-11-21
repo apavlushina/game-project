@@ -5,6 +5,7 @@ const Sse = require("json-sse"); // step 1. import sse
 const roomFactory = require("./room/router"); // step 5.
 const Room = require("./room/model");
 const User = require("./users/model");
+const { serialize } = require("./do");
 
 const cors = require("cors");
 const corsMiddleware = cors();
@@ -43,14 +44,11 @@ app.get("/stream", async (request, response, next) => {
   // console.log("rooms test:", rooms);
 
   // action creation on the backend; this will be sent straight to the frontend reducer:
-  const action = {
-    type: "ROOMS",
-    payload: rooms
-  };
-  // stringify(action) below
+  const string = serialize("ROOMS", rooms);
 
-  const string = JSON.stringify(action); // this sends an action object straight to the reducer
   // this is so that the stream.onmessage always catches an action object for scalability
   stream.updateInit(string); // this updates the stream when the user enters the page
   stream.init(request, response); // this connects the stream
 });
+
+module.exports = "test";
