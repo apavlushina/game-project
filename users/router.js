@@ -14,7 +14,7 @@ router.get("/users", (_request, response, next) => {
 });
 
 router.post("/users", (req, res, next) => {
-  console.log(" test req.body", req.body);
+  // console.log(" test req.body", req.body);
   const user = {
     name: req.body.name,
     email: req.body.email,
