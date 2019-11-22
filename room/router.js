@@ -17,7 +17,7 @@ function roomFactory(stream) {
   router.post("/room", auth, async (request, response, next) => {
     const body = {
       name: request.body.name,
-      turn: 1
+      turn: 0
     };
 
     const room = await Room.create(body).catch(err => next(err));
@@ -25,7 +25,7 @@ function roomFactory(stream) {
     // this is so that the stream.onmessage always catches an action object for scalability
     stream.send(string);
     response.send(room);
-    console.log("post room test");
+    console.log("post room test", room);
   });
 
   router.put("/join", auth, async (req, res, next) => {
