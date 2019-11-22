@@ -101,18 +101,18 @@ function roomFactory(stream) {
 
         await room.update({ turn: Sequelize.literal("turn+1") });
 
-        if (room.turn > 5) {
-          await User.update(
-            {
-              coins: 5,
-              decision: null
-            },
-            { where: { roomId: room.id } }
-          );
-          await room.update({
-            turn: 0
-          });
-        }
+        //   if (room.turn > 5) {
+        //     await User.update(
+        //       {
+        //         coins: 5,
+        //         decision: null
+        //       },
+        //       { where: { roomId: room.id } }
+        //     );
+        //     await room.update({
+        //       turn: 0
+        //     });
+        //   }
       }
 
       const rooms = await Room.findAll({ include: [User] });
