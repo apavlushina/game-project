@@ -6,7 +6,7 @@ const User = require("../users/model");
 const Sequelize = require("sequelize");
 const { serialize } = require("../do");
 
-console.log("serialize test:", serialize);
+// console.log("serialize test:", serialize);
 
 const { Router } = express;
 
@@ -25,7 +25,7 @@ function roomFactory(stream) {
     // this is so that the stream.onmessage always catches an action object for scalability
     stream.send(string);
     response.send(room);
-    console.log("post room test", room);
+    // console.log("post room test", room);
   });
 
   router.put("/join", auth, async (req, res, next) => {
@@ -117,6 +117,21 @@ function roomFactory(stream) {
 
       const rooms = await Room.findAll({ include: [User] });
 
+      const string = serialize("ROOMS", rooms);
+      stream.send(string);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.put("/endgame", auth, async (req, res, next) => {
+    const { user } = req;
+    try {
+      await user.update({ coins: 5, decision: null });
+      const room = await Room.findByPk(user.roomId, { include: [User] });
+      await room.update({ turn: 0 });
+
+      const rooms = await Room.findAll({ include: [User] });
       const string = serialize("ROOMS", rooms);
       stream.send(string);
     } catch (error) {
